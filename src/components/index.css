@@ -1,0 +1,91 @@
+#todos td,
+#customers th {
+  /* border: 1px solid #ddd; */
+  padding: 10px !important;
+  text-align: center;
+}
+
+#todos tr:nth-child(even) {
+  background-color: #f2f2f2 !important;
+}
+
+#todos > tr:hover {
+  background-color: #ddd !important;
+}
+
+#todos th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: #66697a !important;
+  color: white !important;
+  font-weight: 700 !important;
+  font-size: 18px !important;
+}
+#todos th:hover {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: #66697a !important;
+  color: white !important;
+}
+
+.css-19xm0h7-MuiButtonBase-root-MuiPaginationItem-root {
+  /* background-color: #ffc422 !important; */
+  background-color: #ffc422 !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
+  font-size: 16px !important;
+  border: 0px !important;
+  border-radius: 4px !important;
+  width: 26px !important;
+  height: 26px !important;
+}
+.Mui-selected {
+  background-color: #3b4caf !important;
+}
+.check-styles {
+  color: #ffffff !important;
+}
+.css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root.Mui-active {
+  color: #ffc422 !important;
+}
+.css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root:hover {
+  color: #ffc422 !important;
+}
+.css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root.Mui-active
+  .MuiTableSortLabel-icon {
+  opacity: 1;
+  color: #ffc422 !important;
+}
+tr.Mui-selected {
+  background-color: inherit !important;
+}
+@media screen and (max-width: 992px) {
+  .todos-table-container {
+    padding: 30px !important;
+  }
+}
+
+.search-container {
+  border: 0px !important;
+  width: 50%;
+}
+.search-input .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root {
+  border-color: #ffffff !important;
+  border-radius: 50px !important;
+  height: 50px !important;
+  padding: 0px !important;
+  color: #ffffff !important;
+}
+.search-input .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+  border-color: #ffffff !important;
+  color: #ffffff !important;
+}
+.search-input > label.css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root {
+  color: #ffffff !important;
+  padding: 0px !important;
+}
+.search-input > label.css-1jy569b-MuiFormLabel-root-MuiInputLabel-root {
+  color: #ffffff !important;
+}

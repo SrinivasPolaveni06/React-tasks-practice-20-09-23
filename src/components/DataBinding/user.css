@@ -1,0 +1,26 @@
+.css-19kzrtu {
+    padding: 24px;
+    width: 100%;
+  }
+  
+  #form-card {
+    width: 30%;
+    padding: 20px;
+  }
+  
+  #userdatacard {
+    width: 30%;
+    padding: 20px;
+  }
+  
+  @media screen and (max-width:767px) {
+    #form-card {
+      width: 90%;
+      padding: 20px;
+    }
+  
+    #userdatacard {
+      width: 90%;
+      padding: 20px;
+    }
+  }
