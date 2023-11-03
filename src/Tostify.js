@@ -3,6 +3,7 @@ import React from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Button from "@mui/material/Button";
+// import { visuallyHidden } from '@mui/utils';
 
 function App() {
   const options = {
@@ -19,6 +20,9 @@ function App() {
     //console.log("hello");
     toast[text.toLowerCase()](`${text} Message!`, options);
   };
+
+
+
 
   return (
     <>
@@ -60,6 +64,8 @@ function App() {
 
         <ToastContainer />
       </div>
+
+
     </>
   );
 }

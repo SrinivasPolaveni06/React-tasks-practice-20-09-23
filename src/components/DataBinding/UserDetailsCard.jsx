@@ -1,15 +1,16 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-
+import PropTypes from 'prop-types';
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import "./user.css";
 
 export default function NameCard(props) {
-  const { name, course, experience } = props.userData;
+  const { userData, onClearUserDetails } = props
+  const { name, course, experience } = userData;
 
   const onClearUserData = () => {
-    props.onClearUserDetails();
+    onClearUserDetails();
   };
   return (
     <Box id="userdatacard" className="m-3 ms-md-5 shadow rounded">
@@ -41,3 +42,11 @@ export default function NameCard(props) {
     </Box>
   );
 }
+NameCard.propTypes = {
+  userData: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    course: PropTypes.string.isRequired,
+    experience: PropTypes.string.isRequired,
+  }).isRequired,
+  onClearUserDetails: PropTypes.func.isRequired,
+};

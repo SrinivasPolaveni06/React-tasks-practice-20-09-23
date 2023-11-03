@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import * as moment from "moment";
+// import { v4 as uuidv4 } from 'uuid';
 import {
   Container,
   TextField,
@@ -11,28 +12,16 @@ import {
   FormControlLabel,
 } from "@mui/material";
 
-function Index() {
+function Index({ todoId }) {
   const initialValue = {
     title: "",
     completed: false,
     target: "",
-    createdAt: "",
-    updatedAt: "",
   };
 
-  const [todoData, setTodoData] = useState(initialValue);
-
-  function onChangeInputData(event) {
-    const { name, value } = event.target;
-    if (name === "completed") {
-      setTodoData({ ...todoData, [name]: !todoData.completed });
-    } else {
-      setTodoData({ ...todoData, [name]: value });
-    }
-  }
-
+  // Use formik to handle form state
   const formik = useFormik({
-    initialValues: todoData,
+    initialValues: initialValue,
     enableReinitialize: true,
     validationSchema: Yup.object({
       title: Yup.string()
@@ -41,29 +30,64 @@ function Index() {
         .required("Required"),
       target: Yup.string().min(3, "Too Short!").required("Required"),
     }),
+
+    // Your form submission logic
     onSubmit: (values) => {
       let finalDate = moment().format("YYYY-MM-DD h:mm:ss");
-      const Totaldata = {
-        ...values,
-        createdAt: finalDate,
-        updatedAt: finalDate,
-      };
 
-      axios
-        .post("http://localhost:3004/todos", Totaldata)
-        .then((res) => {
-          console.log(res);
-          // navigate("/");
-          window.location.reload();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      if (todoId) {
+        const Totaldata = {
+          ...values,
+          updatedAt: finalDate,
+        };
+
+        axios
+          .put(`http://localhost:3004/todos/${todoId}`, Totaldata)
+          .then((res) => {
+            //console.log(res);
+            // navigate("/");
+            window.location.reload();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        const Totaldata = {
+          ...values,
+          createdAt: finalDate,
+          updatedAt: finalDate,
+        };
+
+        axios
+          .post("http://localhost:3004/todos", Totaldata)
+          .then((res) => {
+            //console.log(res);
+            // navigate("/");
+            window.location.reload();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     },
+
   });
 
+  useEffect(() => {
+    if (todoId) {
+      axios
+        .get(`http://localhost:3004/todos/${todoId}`)
+        .then((res) => {
+          const Target = moment(res.data.target).format("YYYY-MM-DD");
+          // Use formik's setFieldValue to update form state
+          formik.setValues({ ...res.data, target: Target });
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [todoId]);
+
   return (
-    <Container className=" mb-4" sx={{ width: "50%" }}>
+    <Container className=" my-5" sx={{ width: "50%" }}>
       <h3 className="text-center mb-2">Todo Creation Form</h3>
       <form className="" onSubmit={formik.handleSubmit}>
         <TextField
@@ -83,8 +107,8 @@ function Index() {
             <Checkbox
               id="completed"
               name="completed"
-              checked={todoData.completed}
-              onChange={(event) => onChangeInputData(event)}
+              checked={formik.values.completed}
+              onChange={formik.handleChange}
             />
           }
           label="Completed"
@@ -93,7 +117,6 @@ function Index() {
           fullWidth
           id="target"
           name="target"
-          // label="Target"
           type="date"
           variant="outlined"
           placeholder=""
@@ -112,3 +135,4 @@ function Index() {
 }
 
 export default Index;
+

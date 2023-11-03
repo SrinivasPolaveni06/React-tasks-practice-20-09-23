@@ -1,30 +1,33 @@
 import * as React from "react";
 import PropTypes from "prop-types";
-import { alpha } from "@mui/material/styles";
+//import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
+//import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
-import Checkbox from "@mui/material/Checkbox";
+//import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 // import FormControlLabel from "@mui/material/FormControlLabel";
 // import Switch from "@mui/material/Switch";
 import DeleteIcon from "@mui/icons-material/Delete";
-import FilterListIcon from "@mui/icons-material/FilterList";
+//import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { Stack, Pagination } from "@mui/material";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import axios from "axios";
 import { TextField } from "@mui/material";
+//import EditIcon from '@mui/icons-material/Edit';
+import TodoCreationForm from './TodoCreation/index'
+
 import "./index.css";
 
 function descendingComparator(a, b, orderBy) {
@@ -109,7 +112,7 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
+        {/* <TableCell padding="checkbox">
           <Checkbox
             className="check-styles"
             indeterminate={numSelected > 0 && numSelected < rowCount}
@@ -119,7 +122,7 @@ function EnhancedTableHead(props) {
               "aria-label": "select all desserts",
             }}
           />
-        </TableCell>
+        </TableCell> */}
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -140,6 +143,9 @@ function EnhancedTableHead(props) {
             </TableSortLabel>
           </TableCell>
         ))}
+        <TableCell
+          align="left"
+        >Action</TableCell>
       </TableRow>
     </TableHead>
   );
@@ -154,8 +160,12 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
+const onDeleteTodoItems = () => {
+
+}
+
 function EnhancedTableToolbar(props) {
-  const { numSelected, handleSearch, searchTerm } = props;
+  const { numSelected, handleSearch, searchTerm, handleEditClick } = props;
 
   return (
     <Toolbar
@@ -203,13 +213,13 @@ function EnhancedTableToolbar(props) {
 
       {numSelected > 0 ? (
         <Box className="d-flex align-items-center">
-          <Tooltip title="Edit">
-            <IconButton sx={{ color: "#ffffff" }}>
+          {/* <Tooltip title="Edit">
+            <IconButton sx={{ color: "#ffffff" }} onClick={handleEditClick}>
               <EditNoteIcon sx={{ fontSize: "32px !important" }} />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
           <Tooltip title="Delete">
-            <IconButton sx={{ color: "#ffffff" }}>
+            <IconButton sx={{ color: "#ffffff" }} onClick={onDeleteTodoItems}>
               <DeleteIcon sx={{ fontSize: "32px !important" }} />
             </IconButton>
           </Tooltip>
@@ -233,12 +243,40 @@ export default function EnhancedTable() {
   //const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
+  const [EditingId, setIsEditingID] = React.useState(null);
+
+
+  const handleEditClick = (id) => {
+
+    setIsEditingID(id);
+  };
+
+
+  const handleDeleteClick = (todoId) => {
+
+    //setIsEditing(true);
+    const confirmMessage = window.confirm('Are You Sure, You Want Delete this Todo Item...')
+    if (confirmMessage) {
+      axios
+        .delete(`http://localhost:3004/todos/${todoId}`,)
+        .then((res) => {
+          //console.log(res);
+          // navigate("/");
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+
+  };
+
   React.useEffect(() => {
     axios
       .get("http://localhost:3004/todos")
       .then((res) => {
         setTodoList(res.data);
-        console.log(res.data);
+        //console.log(res.data);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -267,12 +305,12 @@ export default function EnhancedTable() {
     setSelected([]);
   };
 
-  const handleClick = (event, title) => {
-    const selectedIndex = selected.indexOf(title);
+  const handleClick = (event, id) => {
+    const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, title);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -283,7 +321,7 @@ export default function EnhancedTable() {
         selected.slice(selectedIndex + 1)
       );
     }
-
+    console.log(newSelected)
     setSelected(newSelected);
   };
 
@@ -301,7 +339,7 @@ export default function EnhancedTable() {
   //     setDense(event.target.checked);
   //   };
 
-  const isSelected = (title) => selected.indexOf(title) !== -1;
+  const isSelected = (id) => selected.indexOf(id) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -323,6 +361,7 @@ export default function EnhancedTable() {
           numSelected={selected.length}
           handleSearch={handleSearch}
           searchTerm={searchTerm}
+          handleEditClick={handleEditClick}
         />
         <TableContainer>
           <Table
@@ -341,29 +380,30 @@ export default function EnhancedTable() {
             />
             <TableBody>
               {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.title);
+                const isItemSelected = isSelected(row);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, row.title)}
                     role="checkbox"
+                    // onClick={(event) => handleClick(event, row)}
                     aria-checked={isItemSelected}
                     tabIndex={-1}
                     key={row.title}
                     selected={isItemSelected}
                     sx={{ cursor: "pointer" }}
                   >
-                    <TableCell padding="checkbox">
+                    {/* <TableCell padding="checkbox">
                       <Checkbox
                         color="primary"
+                        onClick={(event) => handleClick(event, row)}
                         checked={isItemSelected}
                         inputProps={{
                           "aria-labelledby": labelId,
                         }}
                       />
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell
                       //   component="th"
                       id={labelId}
@@ -380,6 +420,18 @@ export default function EnhancedTable() {
                     <TableCell align="start">{row.target}</TableCell>
                     <TableCell align="start">{row.createdAt}</TableCell>
                     <TableCell align="start">{row.updatedAt}</TableCell>
+                    <TableCell>
+                      <Tooltip title="Edit">
+                        <IconButton onClick={() => handleEditClick(row.id)}>
+                          <EditNoteIcon sx={{ fontSize: "25px !important" }} />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Edit">
+                        <IconButton onClick={() => handleDeleteClick(row.id)}>
+                          <DeleteIcon sx={{ fontSize: "25px !important" }} />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -392,6 +444,8 @@ export default function EnhancedTable() {
                   <TableCell colSpan={6}> No Data Found</TableCell>
                 </TableRow>
               )}
+
+
             </TableBody>
           </Table>
         </TableContainer>
@@ -422,6 +476,14 @@ export default function EnhancedTable() {
           </Stack>
         </div>
       </Paper>
+      <TodoCreationForm todoId={EditingId} />
+      {/* {isEditing && (
+        <EditForm
+          selectedTodos={selectedTodos}
+          onCancelEdit={() => setIsEditing(false)}
+        />
+      )} */}
+
     </Box>
   );
 }
